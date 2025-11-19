@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Background Responsive</title>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #011229;
+            font-family: Arial, sans-serif;
+        }
+
+        .hero {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .bg-img {
+            max-width: 100%;
+            max-height: 100%;
+            width: auto;
+            height: auto;
+        }
+
+        /* Container teks di-scale mengikuti gambar */
+        .text-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform-origin: center center;
+            transform: translate(-50%, -50%);
+        }
+
+        .text-content {
+            color: white;
+            text-align: center;
+            font-size: 30px;
+            white-space: nowrap;
+            /* <-- cegah text wrapping */
+        }
+    </style>
+
+    <script>
+        function scaleText() {
+            const img = document.querySelector('.bg-img');
+            const textContainer = document.querySelector('.text-container');
+
+            const scale = img.clientWidth / img.naturalWidth;
+
+            textContainer.style.transform =
+                `translate(-50%, -50%) scale(${scale})`;
+        }
+        window.onload = scaleText;
+        window.onresize = scaleText;
+    </script>
+</head>
+
+<body>
+
+    <div class="hero">
+        <img src="Artboard-1.png" class="bg-img">
+
+        <div class="text-container">
+            <div class="text-content">
+                <!-- <h1>Hello World</h1>
+                <p>Teks ini skalanya mengikuti ukuran gambar.</p> -->
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>
