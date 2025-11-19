@@ -4,14 +4,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Background Responsive</title>
-
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" rel="stylesheet">
+    <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+    <title>Background Responsive Multiple Cards</title>
     <style>
         body {
             margin: 0;
             padding: 0;
-            background: #011229;
-            font-family: Arial, sans-serif;
+            /* background: #011229; */
+            background: #092242;
+            font-family: 'Roboto';
+            /* font-weight: 700;  */
         }
 
         .hero {
@@ -29,54 +32,749 @@
             max-height: 100%;
             width: auto;
             height: auto;
+            display: block;
         }
 
-        /* Container teks di-scale mengikuti gambar */
-        .text-container {
+        .card {
             position: absolute;
-            top: 50%;
-            left: 50%;
             transform-origin: center center;
-            transform: translate(-50%, -50%);
-        }
-
-        .text-content {
-            color: white;
-            text-align: center;
-            font-size: 30px;
             white-space: nowrap;
-            /* <-- cegah text wrapping */
+            text-align: center;
+            color: white;
+            /* background-color: #011229; */
         }
+
+        .center-title {
+            width: 100%;
+            text-align: center;
+            display: block;
+            margin-top: 10px;
+        }
+
+        .center-status {
+            width: 100%;
+            text-align: center;
+            display: block;
+            margin: 0;
+            font-size: 28px;
+
+        }
+
+        .card-content {
+            font-size: 28px;
+            display: flex;
+            justify-content: space-between;
+            gap: 20 px;
+        }
+
+        .card-col {
+            flex: 1;
+            text-align: left;
+            padding-left: 10px;
+            /* padding-top: 10px; */
+        }
+
+        .row-item {
+            display: flex;
+            gap: 10px;
+            font-family: 'Roboto', sans-serif;
+            font-weight: bold;
+        }
+
+        .row-inv-input {
+            margin-top: 10px;
+        }
+
+        .label {
+            width: 90px;
+            position: relative;
+            padding-right: 20px;
+        }
+
+        .label-output {
+            width: 120px;
+
+        }
+
+        .label-cost {
+            width: 200px;
+        }
+
+
+        .label::after {
+            content: ":";
+            position: absolute;
+            right: 0;
+        }
+
+        .value {
+            color: #38a5c5;
+        }
+
+        .inv_input {
+            margin-top: 10px;
+            margin: 0;
+        }
+
+        .inv_input h3 {
+            margin: 0 0 0 50px;
+        }
+
+
+        .inv_output {
+
+            margin: 0;
+        }
+
+        .inv_output h4 {
+            margin: 0 0 0 40px;
+        }
+
+        .sensor-card {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            padding: 10px;
+            color: white;
+            font-family: 'Roboto', sans-serif;
+            white-space: nowrap;
+        }
+
+        .sensor-col {
+            flex: 1;
+            padding-left: 10px;
+        }
+
+        .sensor-item {
+            margin-bottom: 10px;
+            line-height: 1.2;
+        }
+
+        .sensor-label {
+            font-weight: 700;
+            font-size: 28px;
+            display: block;
+        }
+
+        .value.big {
+            display: block;
+            font-size: 38px;
+            font-weight: 700;
+            color: #39c3e8;
+        }
+
+        .sensor-icon {
+            margin-top: 5px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .icon {
+            width: 80px;
+            height: auto;
+        }
+
+  /* ---------- Container (posisi kiri) ---------- */
+  .dropdown-container {
+    position: relative;
+    display: inline-block;
+    margin-left: 0; /* pastikan di kiri */
+    float: left;    /* atau gunakan float/ flex pada parent */
+  }
+
+  /* ---------- Button ---------- */
+  .dropdown-btn {
+    background: linear-gradient(135deg, rgba(11,61,145,0.30), rgba(30,144,255,0.50));
+    color: white;
+    border: none;
+    font-family: 'Roboto';
+    padding: 12px 16px;
+    font-size: 26px;
+    border-radius: 0px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    user-select: none;
+    width: 350px; /* atur lebar tombol di sini */
+    height: 35px;
+  }
+
+  /* Pastikan teks label tetap di kiri dan panah selalu di ujung kanan */
+  .dropdown-btn .label {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .dropdown-btn .arrow {
+    margin-left: auto; /* paksa panah ke ujung kanan */
+    width: 0;
+    height: 0;
+    font-family: inherit;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 7px solid white;
+    transition: transform 0.18s ease;
+  }
+
+  /* ketika container punya class .open, panah diputar */
+  .dropdown-container.open .arrow {
+    transform: rotate(180deg);
+  }
+
+  /* ---------- Menu ---------- */
+  .dropdown-menu {
+    display: none; /* di-show via JS */
+    position: absolute;
+    font-size: 26px;
+    top: calc(100% + 8px);
+    left: 0;                /* pastikan menu muncul dari kiri tombol */
+    min-width: 350px;       /* cocokkan dengan lebar tombol */
+    background: rgba(31, 104, 170,0.65); /* atur transparansi di sini */
+    backdrop-filter: blur(6px);
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.5);
+    z-index: 1000;
+     max-height: 200px;      /* tinggi maksimal dropdown */
+  overflow-y: auto;       /* tampilkan scroll jika item banyak */
+  scrollbar-width: thin;  /* (opsional) scrollbar tipis */
+  }
+
+  .dropdown-menu a {
+    text-align: left;
+    display: block;
+    padding: 10px 14px;
+    text-decoration: none;
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.12s ease;
+  }
+
+  .dropdown-menu a:hover,
+  .dropdown-menu a.active {
+    background: rgba(255,255,255,0.08);
+  }
+
+  /* helper untuk show menu (JS akan menambah/menghapus inline style atau class) */
+  .dropdown-container.open .dropdown-menu {
+    display: block;
+  }
+
     </style>
-
     <script>
-        function scaleText() {
+        function positionAndScaleAll() {
             const img = document.querySelector('.bg-img');
-            const textContainer = document.querySelector('.text-container');
+            const cards = document.querySelectorAll('.card');
 
-            const scale = img.clientWidth / img.naturalWidth;
+            if (!img.naturalWidth) return;
 
-            textContainer.style.transform =
-                `translate(-50%, -50%) scale(${scale})`;
+            const natW = img.naturalWidth;
+            const natH = img.naturalHeight;
+
+            const dispW = img.clientWidth;
+            const dispH = img.clientHeight;
+
+            const scale = dispW / natW;
+
+            const rect = img.getBoundingClientRect();
+            const imgLeft = rect.left;
+            const imgTop = rect.top;
+
+            // LOOP semua card
+            cards.forEach(card => {
+
+                const ox = parseFloat(card.dataset.x);
+                const oy = parseFloat(card.dataset.y);
+
+                const finalX = imgLeft + (ox * scale);
+                const finalY = imgTop + (oy * scale);
+
+                card.style.left = finalX + "px";
+                card.style.top = finalY + "px";
+                card.style.transform = `translate(-50%, -50%) scale(${scale})`;
+            });
         }
-        window.onload = scaleText;
-        window.onresize = scaleText;
+
+        window.onload = positionAndScaleAll;
+        window.onresize = positionAndScaleAll;
     </script>
 </head>
 
 <body>
-
     <div class="hero">
-        <img src="Artboard-1.png" class="bg-img">
+        <img src="Artboard-3.png" class="bg-img">
+        <!-- CARD 1 -->
+        <div class="card" data-x="285" data-y="320" style="width: 450px;height: 200px;">
+            <div class="card-content">
+                <div class="card-col inv_input">
+                    <H3 style="text-align: center; margin: 0;">PV_1</H3>
 
-        <div class="text-container">
-            <div class="text-content">
-                <!-- <h1>Hello World</h1>
-                <p>Teks ini skalanya mengikuti ukuran gambar.</p> -->
+                    <div class="row-item row-inv-input">
+                        <div class="label">Voltage</div>
+                        <div class="value">300.9V</div>
+                    </div>
+
+                    <div class="row-item row-inv-input">
+                        <div class="label">Current</div>
+                        <div class="value">0.05A</div>
+                    </div>
+
+                    <div class="row-item row-inv-input">
+                        <div class="label">Power</div>
+                        <div class="value">1.1W</div>
+                    </div>
+
+                </div>
+
+                <div class="card-col" style="margin: 0;">
+                    <H3 style="text-align: center; margin: 0;">PV_2</H3>
+
+                    <div class="row-item row-inv-input">
+                        <div class="label">Voltage</div>
+                        <div class="value">300.9V</div>
+                    </div>
+
+                    <div class="row-item row-inv-input">
+                        <div class="label">Current</div>
+                        <div class="value">0.05 A</div>
+                    </div>
+
+                    <div class="row-item row-inv-input">
+                        <div class="label">Power</div>
+                        <div class="value">1000 W</div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+        <!-- CARD 2 -->
+        <div class="card" data-x="285" data-y="770" style="width: 450px;height: 550px;">
+            <div class="center-title">
+                <h1 style="margin: 0;">3 Phase AC Output</h1>
+            </div>
+            <div class="card-content">
+                <div class="card-col inv_output">
+                    <H4>L1</H4>
+                    <div class="row-item">
+                        <div class="label label-output">Voltage</div>
+                        <div class="value">220 V</div>
+                    </div>
+
+                    <div class="row-item">
+                        <div class="label label-output">Current</div>
+                        <div class="value">0.05 A</div>
+                    </div>
+
+                    <div class="row-item">
+                        <div class="label label-output">Power</div>
+                        <div class="value">1.1 W</div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="card-content">
+                <div class="card-col inv_output">
+                    <H4>L2</H4>
+
+                    <div class="row-item">
+                        <div class="label label-output">Voltage</div>
+                        <div class="value">220 V</div>
+                    </div>
+
+                    <div class="row-item">
+                        <div class="label label-output">Current</div>
+                        <div class="value">0.05 A</div>
+                    </div>
+
+                    <div class="row-item">
+                        <div class="label label-output">Power</div>
+                        <div class="value">1.1 W</div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="card-content">
+                <div class="card-col inv_output">
+                    <H4>L3</H4>
+                    <div class="row-item">
+                        <div class="label label-output">Voltage</div>
+                        <div class="value">220 V</div>
+                    </div>
+
+                    <div class="row-item">
+                        <div class="label label-output">Current</div>
+                        <div class="value">0.05 A</div>
+                    </div>
+
+                    <div class="row-item">
+                        <div class="label label-output">Power</div>
+                        <div class="value">1.1 W</div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="card-content">
+                <div class="card-col inv_output">
+                    <div class="row-item">
+                        <div class="label" style="width: 240px;">Frequency</div>
+                        <div class="value">220 V</div>
+                    </div>
+
+                    <div class="row-item ">
+                        <div class="label" style="width: 240px;">Total Power</div>
+                        <div class="value">0.05 A</div>
+                    </div>
+
+                    <div class="row-item">
+                        <div class="label" style="width: 240px;">Total Energy Today</div>
+                        <div class="value">1.1 W</div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- CARD 3 -->
+        <!-- CARD 3 -->
+        <div class="card" data-x="1643" data-y="326" style="width: 450px; height: 200px;">
+
+            <div class="sensor-card">
+                <div class="sensor-col">
+                    <div class="sensor-item">
+                        <span class="sensor-label">Temperature</span>
+                        <span class="value big">30°C</span>
+                    </div>
+
+                    <div class="sensor-item">
+                        <span class="sensor-label">Light Intensity</span>
+                        <span class="value big">20 Lux</span>
+                    </div>
+                </div>
+
+                <div class="sensor-col">
+                    <div class="sensor-item">
+                        <span class="sensor-label">Humidity</span>
+                        <span class="value big">60%</span>
+                    </div>
+
+                    <div class="sensor-icon">
+                        <img src="humidity.png" class="icon">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+        <!-- CARD 4 -->
+        <div class="card" data-x="1643" data-y="605" style="width: 450px;height: 200px;">
+            <div class="sensor-card">
+                <div class="sensor-col">
+                    <div class="sensor-item">
+                        <span class="sensor-label">Voltage</span>
+                        <span class="value big">220 V</span>
+                    </div>
+
+                    <div class="sensor-item">
+                        <span class="sensor-label">Power</span>
+                        <span class="value big">1000 W</span>
+                    </div>
+                </div>
+
+                <div class="sensor-col">
+                    <div class="sensor-item">
+                        <span class="sensor-label">Current</span>
+                        <span class="value big">20,05 A</span>
+                    </div>
+
+                    <div class="sensor-item">
+                        <span class="sensor-label">Today’s Energy</span>
+                        <span class="value big">100 kWh</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARD 5 -->
+        <div class="card" data-x="1643" data-y="900" style="width: 450px;height: 200px;">
+
+            <div class="card-content">
+                <div class="card-col inv_output">
+
+
+                    <div class="row-item">
+                        <div class="label label-cost">Electricity rates</div>
+                        <div class="value"><span>Rp</span><span>16.699</span><span>/kWh</span></div>
+                    </div>
+
+                    <div class="row-item">
+                        <div class="label label-cost">Total PV Energy</div>
+                        <div class="value">1.1 W</div>
+                    </div>
+                    <div class="center-title">
+                        <h3 style="margin: 0;">Today Saving Cost</h3>
+                        <h2 style="margin: 0;color: greenyellow;"><span>Rp</span><span>110.000.699</span></h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARD 6 -->
+        <div class="card" data-x="960" data-y="905" style="width: 860px;height: 310px;">
+            <div class="card-content">
+                <div id="container" style="width:100%; height:100%; min-height:300px; "></div>
+            </div>
+        </div>
+
+        <!-- Status inverter -->
+        <div class="card" data-x="400" data-y="205" style="width: 150px;height: 40px;">
+
+            <div class="center-status">
+                <span style="color: greenyellow;">Online</span>
+            </div>
+        </div>
+
+        <!-- Status Sensor -->
+        <div class="card" data-x="1770" data-y="210" style="width: 150px;height: 40px;">
+
+            <div class="center-status">
+                <span style="color: greenyellow;">Online</span>
             </div>
         </div>
     </div>
+    <!-- Date Time -->
+    <div class="card" data-x="1480" data-y="110" style="width: 150px;height: 40px;">
+        <div id="waktu" style="font-size: 35px; color: white; font-weight: bold;"></div>
+    </div>
+    <div class="card" data-x="800" data-y="728" style="width: 350px;height: 40px;">
+        <div class="dropdown-container" id="dropdown">
+            <button class="dropdown-btn" id="dropdownBtn">
+                Voltage Inverter Output
+                <span class="arrow"></span>
+            </button>
 
+            <div class="dropdown-menu" id="dropdownMenu">
+                <a data-value="Output 1">Voltage Inverter Output</a>
+                <a data-value="Output 2">Output 2</a>
+                <a data-value="Output 3">Output 3</a>
+                <a data-value="Output 1">Voltage Inverter Output</a>
+                <a data-value="Output 2">Output 2</a>
+                <a data-value="Output 3">Output 3</a>
+                <a data-value="Output 1">Voltage Inverter Output</a>
+                <a data-value="Output 2">Output 2</a>
+                <a data-value="Output 3">Output 3</a>
+                <a data-value="Output 1">Voltage Inverter Output</a>
+                <a data-value="Output 2">Output 2</a>
+                <a data-value="Output 3">Output 3</a>
+            </div>
+        </div>
+    </div>
+    </div>
 </body>
+
+<script type="text/javascript">
+    var dom = document.getElementById('container');
+    var myChart = echarts.init(dom, 'light', {
+        renderer: 'svg',
+        useDirtyRect: false
+    });
+    var app = {};
+
+    var option;
+
+    option = {
+        title: {
+            text: ''
+        },
+
+
+        tooltip: {
+            trigger: 'axis'
+        },
+        legend: {
+            data: ['L1', 'L2', 'L3'],
+            textStyle: {
+                fontSize: 30,
+                color: '#ffff',
+                fontWeight: 'bold',
+
+            },
+            bottom: 0
+        },
+        grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '10%',
+            top: '5%',
+            containLabel: true
+        },
+        toolbox: {
+            feature: {
+                saveAsImage: null
+            }
+        },
+        xAxis: {
+            type: 'category',
+            boundaryGap: false,
+            axisLine: {
+                show: true,          // pastikan garis Y-axis tampil
+                lineStyle: {
+                    width: 5,
+                    color: '#ffff'
+                }
+            },
+            data: [
+                '00.00', '01.00', '02.00', '03.00', '04.00', '05.00', '06.00',
+                '07.00', '08.00', '09.00', '10.00', '11.00', '12.00',
+                '13.00', '14.00', '15.00', '16.00', '17.00', '18.00',
+                '19.00', '20.00', '21.00', '22.00', '23.00'
+            ],
+            axisLabel: {
+                fontSize: 16,      // Ubah ukuran font di sini
+                color: '#ffff',      // (opsional) warna teks
+                rotate: 45,          // (opsional) rotasi teks
+                fontWeight: 'bold'  // (opsional)
+            }
+
+
+        },
+        yAxis: {
+            type: 'value',
+            min: function (value) {
+                return value.max - 40;
+            },
+            axisLabel: {
+                fontSize: 16,      // Ubah ukuran font di sini
+                color: '#ffff',      // (opsional) warna teks
+                rotate: 45,          // (opsional) rotasi teks
+                fontWeight: 'bold'  // (opsional)
+            },
+            splitLine: {
+                show: true,            // tampilkan garis
+                lineStyle: {
+                    width: 1,
+                    type: 'solid',      // solid | dashed | dotted
+                    color: '#ffff'
+                }
+            },
+
+            axisLine: {
+                show: true,          // pastikan garis Y-axis tampil
+                lineStyle: {
+                    width: 5,
+                    color: '#ffff'
+                }
+            },
+
+        },
+        series: [
+            {
+                name: 'L1',
+                type: 'line',
+                smooth: true,
+                data: [233, 214, 238, 203, 229, 216, 237, 225, 212, 234, 208, 221, 239, 207, 231, 217, 226, 202, 235, 219, 240, 213, 228, 204],
+                lineStyle: {
+                    color: 'red',  // warna garis
+                    width: 3,          // ketebalan
+                    type: 'solid'     // solid | dashed | dotted
+                }
+            }
+            ,
+            {
+                name: 'L2',
+                type: 'line',
+                smooth: 'true',
+                data: [220, 236, 209, 227, 203, 234, 210, 222, 238, 214, 231, 205, 239, 216, 225, 233, 207, 223, 230, 218, 240, 212, 229, 204]
+                , lineStyle: {
+                    color: 'cyan',  // warna garis
+                    width: 3,          // ketebalan
+                    type: 'solid'     // solid | dashed | dotted
+                }
+            },
+            {
+                name: 'L3',
+                type: 'line',
+                smooth: 'true',
+                data: [237, 215, 229, 202, 233, 209, 240, 224, 211, 238, 217, 226, 205, 232, 218, 236, 203, 230, 212, 239, 220, 208, 234, 207]
+                , lineStyle: {
+                    color: 'yellow',  // warna garis
+                    width: 3,          // ketebalan
+                    type: 'solid'     // solid | dashed | dotted
+                }
+            }
+        ]
+    };
+
+    if (option && typeof option === 'object') {
+        myChart.setOption(option);
+    }
+
+    window.addEventListener('resize', myChart.resize);
+</script>
+
+<script>
+    function updateTime() {
+        const now = new Date();
+
+        // Ambil waktu
+        const jam = String(now.getHours()).padStart(2, '0');
+        const menit = String(now.getMinutes()).padStart(2, '0');
+        const detik = String(now.getSeconds()).padStart(2, '0');
+
+        // Format tanggal Indonesia
+        const namaBulan = [
+            "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+            "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+        ];
+
+        const tanggal = now.getDate();
+        const bulan = namaBulan[now.getMonth()];
+        const tahun = now.getFullYear();
+
+        // Gabungkan hasil
+        const tampil = `${jam}:${menit}:${detik} , ${tanggal} ${bulan} ${tahun}`;
+
+        document.getElementById('waktu').textContent = tampil;
+    }
+
+    // Update setiap 1 detik
+    setInterval(updateTime, 1000);
+
+    // Panggilan awal
+    updateTime();
+</script>
+<script>
+    const dropdown = document.getElementById("dropdown");
+    const btn = document.getElementById("dropdownBtn");
+    const menu = document.getElementById("dropdownMenu");
+    const items = menu.querySelectorAll("a");
+
+    btn.addEventListener("click", function () {
+        const isOpen = dropdown.classList.contains("open");
+        dropdown.classList.toggle("open", !isOpen);
+        menu.style.display = isOpen ? "none" : "block";
+    });
+
+    items.forEach(item => {
+        item.addEventListener("click", function () {
+            btn.childNodes[0].textContent = this.textContent.trim(); + " ";
+            dropdown.classList.remove("open");
+            menu.style.display = "none";
+        });
+    });
+
+    // Tutup jika klik area luar
+    document.addEventListener("click", function (e) {
+        if (!dropdown.contains(e.target)) {
+            dropdown.classList.remove("open");
+            menu.style.display = "none";
+        }
+    });
+</script>
+
 
 </html>
