@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Office Sensor Dashboard</title>
+
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      background: transparent;
+    }
+
+    #legend {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      background: transparent;
+      color: #c1c1c1;
+      padding: 10px;
+      font-family: Arial;
+      font-size: 14px;
+      border-radius: 6px;
+    }
+
+    #fullScreen {
+      position: fixed;
+      top: 12px;
+      right: 12px;
+
+      width: 42px;
+      height: 42px;
+
+      background: rgba(0, 0, 0, 0.6) url("./share.png") no-repeat center;
+      background-size: 100%;
+      background-color: rgba(255, 255, 255, 0.50);
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    #fullScreen:hover {
+      background-color: rgba(255, 255, 255);
+    }
+
+    #resetView {
+      position: fixed;
+      top: 12px;
+      right: 55px;
+
+      width: 42px;
+      height: 42px;
+
+      background: rgba(0, 0, 0, 0.6) url("./refreshing.png") no-repeat center;
+      background-size: 100%;
+      background-color: rgba(255, 255, 255, 0.50);
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    #resetView:hover {
+      background-color: rgba(255, 255, 255);
+    }
+
+    /* TOOLTIP */
+    .btn-3d::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      top: 150%;
+      right: 50%;
+      transform: translateY(-50%);
+      background: rgba(0, 0, 0, 0.85);
+      color: white;
+      padding: 6px 10px;
+      border-radius: 4px;
+      font-size: 12px;
+      white-space: nowrap;
+
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+
+    .btn-3d:hover::after {
+      opacity: 1;
+    }
+  </style>
+
+  <!-- IMPORT MAP -->
+  <script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.152.2/examples/jsm/"
+  }
+}
+</script>
+</head>
+
+<body>
+
+  <div id="legend">
+    🟢 Normal<br>
+    🟡 Warning<br>
+    🔴 Alarm<br>
+    ⚪ Offline
+  </div>
+  <a id="fullScreen"
+   class="btn-3d"
+   data-tooltip="FullScreen"
+   href="dashboard3d.html"
+   target="_blank">
+</a>
+  <button id="resetView" class="btn-3d" data-tooltip="Reset View"></button>
+
+  <script type="module" src="./main.js"></script>
+</body>
+
+</html>
