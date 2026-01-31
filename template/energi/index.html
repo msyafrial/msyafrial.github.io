@@ -273,6 +273,70 @@
         .dropdown-container.open .dropdown-menu {
             display: block;
         }
+
+        .icon-btn-container {
+            display: flex;
+            /* supaya tombol sejajar */
+            /* gap: 5px; */
+            /* jarak antar tombol */
+            position: absolute;
+            /* pakai absolute agar ikut layout card */
+            left: 0;
+            top: 0;
+        }
+
+        .icon-btn {
+            position: relative;
+            width: 40px;
+            height: 40px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            background-color: transparent;
+            display: flex;
+            /* supaya ikon di dalam bisa center */
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Hanya invert ikon, bukan tombol atau tooltip */
+        .icon-btn .icon-img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            filter: brightness(0) invert(1);
+            /* invert hanya untuk gambar */
+        }
+
+        /* Tooltip tetap normal */
+        .icon-btn::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            top: -35px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #fff;
+            color: #000;
+            /* teks hitam tetap */
+            padding: 6px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+            z-index: 999;
+
+            filter: none;
+            /* pastikan tooltip tidak terinvert */
+            mix-blend-mode: normal;
+            isolation: isolate;
+        }
+
+        .icon-btn:hover::after {
+            opacity: 1;
+        }
     </style>
     <script>
         function positionAndScaleAll() {
@@ -538,8 +602,7 @@
         <!-- CARD 4 -->
         <div class="card" data-x="970" data-y="420" style="width: 850px;height: 550px;">
 
-            <iframe src="../../template/energi/3d"
-                style="width:100%; height:100%; border:none;"></iframe>
+            <iframe src="../../template/energi/3d" style="width:100%; height:100%; border:none;"></iframe>
         </div>
 
         <!-- CARD 6 -->
@@ -600,7 +663,19 @@
             </div>
         </div>
     </div>
+    <div class="card" data-x="1330" data-y="728" style="width: 100px;height: 40px;">
+        <div class="icon-btn-container">
+            <a id="download" class="icon-btn" data-tooltip="Download" href="#">
+                <img src="./src/img/download.png" class="icon-img">
+            </a>
+
+            <a id="fullScreen" class="icon-btn" data-tooltip="FullScreen" href="/template/energi/3d" target="_blank">
+                <img src="./src/img/link.png" style="height: 25px;" class="icon-img">
+            </a>
+        </div>
     </div>
+
+
 </body>
 
 <script>
