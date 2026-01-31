@@ -174,94 +174,105 @@
             height: auto;
         }
 
-  /* ---------- Container (posisi kiri) ---------- */
-  .dropdown-container {
-    position: relative;
-    display: inline-block;
-    margin-left: 0; /* pastikan di kiri */
-    float: left;    /* atau gunakan float/ flex pada parent */
-  }
+        /* ---------- Container (posisi kiri) ---------- */
+        .dropdown-container {
+            position: relative;
+            display: inline-block;
+            margin-left: 0;
+            /* pastikan di kiri */
+            float: left;
+            /* atau gunakan float/ flex pada parent */
+        }
 
-  /* ---------- Button ---------- */
-  .dropdown-btn {
-    background: linear-gradient(135deg, rgba(11,61,145,0.30), rgba(30,144,255,0.50));
-    color: white;
-    border: none;
-    font-family: 'Roboto';
-    padding: 12px 16px;
-    font-size: 26px;
-    border-radius: 0px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-    user-select: none;
-    width: 350px; /* atur lebar tombol di sini */
-    height: 35px;
-  }
+        /* ---------- Button ---------- */
+        .dropdown-btn {
+            background: linear-gradient(135deg, rgba(11, 61, 145, 0.30), rgba(30, 144, 255, 0.50));
+            color: white;
+            border: none;
+            font-family: 'Roboto';
+            padding: 12px 16px;
+            font-size: 26px;
+            border-radius: 0px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+            user-select: none;
+            width: 350px;
+            /* atur lebar tombol di sini */
+            height: 35px;
+        }
 
-  /* Pastikan teks label tetap di kiri dan panah selalu di ujung kanan */
-  .dropdown-btn .label {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  .dropdown-btn .arrow {
-    margin-left: auto; /* paksa panah ke ujung kanan */
-    width: 0;
-    height: 0;
-    font-family: inherit;
-    border-left: 6px solid transparent;
-    border-right: 6px solid transparent;
-    border-top: 7px solid white;
-    transition: transform 0.18s ease;
-  }
+        /* Pastikan teks label tetap di kiri dan panah selalu di ujung kanan */
+        .dropdown-btn .label {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
 
-  /* ketika container punya class .open, panah diputar */
-  .dropdown-container.open .arrow {
-    transform: rotate(180deg);
-  }
+        .dropdown-btn .arrow {
+            margin-left: auto;
+            /* paksa panah ke ujung kanan */
+            width: 0;
+            height: 0;
+            font-family: inherit;
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            border-top: 7px solid white;
+            transition: transform 0.18s ease;
+        }
 
-  /* ---------- Menu ---------- */
-  .dropdown-menu {
-    display: none; /* di-show via JS */
-    position: absolute;
-    font-size: 26px;
-    top: calc(100% + 8px);
-    left: 0;                /* pastikan menu muncul dari kiri tombol */
-    min-width: 350px;       /* cocokkan dengan lebar tombol */
-    background: rgba(31, 104, 170,0.65); /* atur transparansi di sini */
-    backdrop-filter: blur(6px);
-    border-radius: 6px;
-    overflow: hidden;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.5);
-    z-index: 1000;
-     max-height: 200px;      /* tinggi maksimal dropdown */
-  overflow-y: auto;       /* tampilkan scroll jika item banyak */
-  scrollbar-width: thin;  /* (opsional) scrollbar tipis */
-  }
+        /* ketika container punya class .open, panah diputar */
+        .dropdown-container.open .arrow {
+            transform: rotate(180deg);
+        }
 
-  .dropdown-menu a {
-    text-align: left;
-    display: block;
-    padding: 10px 14px;
-    text-decoration: none;
-    color: #fff;
-    cursor: pointer;
-    transition: background 0.12s ease;
-  }
+        /* ---------- Menu ---------- */
+        .dropdown-menu {
+            display: none;
+            /* di-show via JS */
+            position: absolute;
+            font-size: 26px;
+            top: calc(100% + 8px);
+            left: 0;
+            /* pastikan menu muncul dari kiri tombol */
+            min-width: 350px;
+            /* cocokkan dengan lebar tombol */
+            background: rgba(31, 104, 170, 0.65);
+            /* atur transparansi di sini */
+            backdrop-filter: blur(6px);
+            border-radius: 6px;
+            overflow: hidden;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            max-height: 200px;
+            /* tinggi maksimal dropdown */
+            overflow-y: auto;
+            /* tampilkan scroll jika item banyak */
+            scrollbar-width: thin;
+            /* (opsional) scrollbar tipis */
+        }
 
-  .dropdown-menu a:hover,
-  .dropdown-menu a.active {
-    background: rgba(255,255,255,0.08);
-  }
+        .dropdown-menu a {
+            text-align: left;
+            display: block;
+            padding: 10px 14px;
+            text-decoration: none;
+            color: #fff;
+            cursor: pointer;
+            transition: background 0.12s ease;
+        }
 
-  /* helper untuk show menu (JS akan menambah/menghapus inline style atau class) */
-  .dropdown-container.open .dropdown-menu {
-    display: block;
-  }
+        .dropdown-menu a:hover,
+        .dropdown-menu a.active {
+            background: rgba(255, 255, 255, 0.08);
+        }
 
+        /* helper untuk show menu (JS akan menambah/menghapus inline style atau class) */
+        .dropdown-container.open .dropdown-menu {
+            display: block;
+        }
     </style>
     <script>
         function positionAndScaleAll() {
@@ -303,7 +314,7 @@
 </head>
 
 <body>
-    
+
     <div class="hero">
         <img src="background.png" class="bg-img">
         <!-- CARD 1 -->
@@ -524,10 +535,11 @@
             </div>
         </div>
 
-         <!-- CARD 4 -->
+        <!-- CARD 4 -->
         <div class="card" data-x="970" data-y="420" style="width: 850px;height: 550px;">
-         
-            <iframe src="../../template/energi/3d/dashboard3d.html" style="width:100%; height:100%; border:none;"></iframe>
+
+            <iframe src="../../template/energi/3d"
+                style="width:100%; height:100%; border:none;"></iframe>
         </div>
 
         <!-- CARD 6 -->
@@ -565,27 +577,238 @@
             </button>
 
             <div class="dropdown-menu" id="dropdownMenu">
-                <a data-value="Output 1">Voltage Inverter input</a>
-                <a data-value="Output 2">Current Inverter input</a>
-                <a data-value="Output 3">power Inverter input</a>
-                <a data-value="Output 1">Voltage Inverter Output</a>
-                <a data-value="Output 2">Current Inverter Output</a>
-                <a data-value="Output 3">power Inverter Output</a>
-                <a data-value="Output 1">Voltage Inverter Output</a>
-                <a data-value="Output 2">Total Power Inverter Output</a>
-                <a data-value="Output 3">Temperature Class Sensor</a>
-                <a data-value="Output 1">Humidity Class Sensor</a>
-                <a data-value="Output 2">Light Intensity Class Sensor</a>
-                <a data-value="Output 3">Voltage Class Energy</a>
-                <a data-value="Output 1">Current Class Energy</a>
-                <a data-value="Output 2">Power Class Energy</a>
-                <a data-value="Output 3">Voltage Class Energy</a>
+                <!-- Inverter INPUT -->
+                <a data-key="voltage_inverter_input">Voltage Inverter Input</a>
+                <a data-key="current_inverter_input">Current Inverter Input</a>
+                <a data-key="power_inverter_input">Power Inverter Input</a>
+
+                <!-- Inverter OUTPUT -->
+                <a data-key="voltage_inverter_output">Voltage Inverter Output</a>
+                <a data-key="current_inverter_output">Current Inverter Output</a>
+                <a data-key="power_inverter_output">Power Inverter Output</a>
+                <a data-key="total_power_inverter_output">Total Power Inverter Output</a>
+
+                <!-- Sensor Class -->
+                <a data-key="temperature_class_sensor">Temperature Class Sensor</a>
+                <a data-key="humidity_class_sensor">Humidity Class Sensor</a>
+                <a data-key="light_intensity_class_sensor">Light Intensity Class Sensor</a>
+
+                <!-- Energy Class -->
+                <a data-key="voltage_class_energy">Voltage Class Energy</a>
+                <a data-key="current_class_energy">Current Class Energy</a>
+                <a data-key="power_class_energy">Power Class Energy</a>
             </div>
         </div>
     </div>
     </div>
 </body>
 
+<script>
+    const dom = document.getElementById('container');
+    const myChart = echarts.init(dom, 'light', { renderer: 'svg' });
+
+    const baseOption = {
+        tooltip: {
+            trigger: 'axis'
+        },
+        legend: {
+            bottom: 0,
+            textStyle: { color: '#fff', fontSize: 28, fontWeight: 'bold' }
+        },
+        grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '10%',
+            top: '8%',
+            containLabel: true
+        },
+        xAxis: {
+            type: 'category',
+            boundaryGap: false,
+            axisLine: { lineStyle: { color: '#fff', width: 4 } },
+            axisLabel: { color: '#fff', fontSize: 16, rotate: 45 }
+        },
+        yAxis: {
+            type: 'value',
+            axisLine: { lineStyle: { color: '#fff', width: 4 } },
+            splitLine: { lineStyle: { color: '#fff' } }
+        },
+        series: []
+    };
+
+    myChart.setOption(baseOption);
+    window.addEventListener('resize', myChart.resize);
+</script>
+<script>
+    let dashboardData = null;
+
+    fetch('./data/dashboard_data.json')
+        .then(res => res.json())
+        .then(data => {
+            dashboardData = data;
+            loadChart('voltage_inverter_input'); // default
+        })
+        .catch(err => console.error('Load JSON gagal:', err));
+</script>
+
+<script>
+    function padTo24(dataArray) {
+        const result = [...dataArray];
+        while (result.length < 24) {
+            result.push(null);
+        }
+        return result.slice(0, 24);
+    }
+    function normalizeSeriesOnly(seriesObj) {
+        const out = {};
+        for (const key in seriesObj) {
+            out[key] = padTo24(seriesObj[key]);
+        }
+        return out;
+    }
+
+</script>
+<script>
+    function loadChart(key) {
+        if (!dashboardData || !dashboardData[key]) return;
+
+        const cfg = dashboardData[key];
+        const paddedSeries = normalizeSeriesOnly(cfg.series);
+        console.log(paddedSeries);
+
+        const series = Object.entries(paddedSeries).map(([name, data]) => ({
+            name,
+            type: 'line',
+            smooth: true,
+            data,
+            lineStyle: { width: 3 },
+            connectNulls: false
+        }));
+
+        myChart.setOption({
+            title: {
+                text: '',
+            },
+            color: [
+                '#00E5FF',
+                'greenyellow',
+                '#FF5252'
+            ],
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    type: 'cross',
+                    label: {
+                        backgroundColor: '#333'
+                    }
+                },
+                confine: true,
+                backgroundColor: 'rgba(0,0,0,0.7)',
+                textStyle: {
+                    fontSize: 16,
+                    color: '#fff'
+                },
+                formatter: function (params) {
+                    let html = `<b>Jam ${params[0].axisValue}</b><br/>`;
+
+                    params.forEach(p => {
+                        if (p.data !== null) {
+                            html += `
+                <span style="color:${p.color}">●</span>
+                ${p.seriesName}: <b>${p.data} ${cfg.unit}</b><br/>
+            `;
+                        }
+                    });
+
+                    return html;
+                }
+
+            }
+            ,
+            legend: {
+                data: Object.keys(paddedSeries),
+                textStyle: {
+                    fontSize: 30,
+                    color: '#ffff',
+                    fontWeight: 'bold',
+
+                },
+                bottom: 0
+            },
+            grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '10%',
+                top: '5%',
+                containLabel: true
+            },
+            toolbox: {
+                feature: {
+                    saveAsImage: null
+                }
+            },
+            xAxis: {
+                type: 'category',
+                boundaryGap: false,
+                axisLine: {
+                    show: true,          // pastikan garis Y-axis tampil
+                    lineStyle: {
+                        width: 5,
+                        color: '#ffff'
+                    }
+                },
+                data: [
+                    "00.00", "01.00", "02.00", "03.00", "04.00", "05.00",
+                    "06.00", "07.00", "08.00", "09.00", "10.00", "11.00",
+                    "12.00", "13.00", "14.00", "15.00", "16.00", "17.00",
+                    "18.00", "19.00", "20.00", "21.00", "22.00", "23.00"
+                ],
+                axisLabel: {
+                    fontSize: 16,      // Ubah ukuran font di sini
+                    color: '#ffff',      // (opsional) warna teks
+                    rotate: 45,          // (opsional) rotasi teks
+                    fontWeight: 'bold'  // (opsional)
+                }
+            },
+            yAxis: {
+                // axisLabel: {
+                //     formatter: `{value} ${cfg.unit}`
+                // }
+
+                type: 'value',
+                min: function (value) {
+                    return value.min;
+                },
+                axisLabel: {
+                    fontSize: 16,      // Ubah ukuran font di sini
+                    color: '#ffff',      // (opsional) warna teks
+                    rotate: 45,          // (opsional) rotasi teks
+                    fontWeight: 'bold'  // (opsional)
+                },
+                splitLine: {
+                    show: true,            // tampilkan garis
+                    lineStyle: {
+                        width: 1,
+                        type: 'solid',      // solid | dashed | dotted
+                        color: '#ffff'
+                    }
+                },
+
+                axisLine: {
+                    show: true,          // pastikan garis Y-axis tampil
+                    lineStyle: {
+                        width: 5,
+                        color: '#ffff'
+                    }
+                },
+            },
+            series
+        }, true);
+    }
+</script>
+
+
+<!-- 
 <script type="text/javascript">
     var dom = document.getElementById('container');
     var myChart = echarts.init(dom, 'light', {
@@ -653,15 +876,15 @@
 
         },
         yAxis: {
-            type: 'value',
-            min: function (value) {
-                return value.max - 40;
-            },
-            axisLabel: {
-                fontSize: 16,      // Ubah ukuran font di sini
-                color: '#ffff',      // (opsional) warna teks
-                rotate: 45,          // (opsional) rotasi teks
-                fontWeight: 'bold'  // (opsional)
+                type: 'value',
+                min: function (value) {
+                    return value.max - 40;
+                },
+                axisLabel: {
+                    fontSize: 16,      // Ubah ukuran font di sini
+                    color: '#ffff',      // (opsional) warna teks
+                    rotate: 45,          // (opsional) rotasi teks
+                    fontWeight: 'bold'  // (opsional)
             },
             splitLine: {
                 show: true,            // tampilkan garis
@@ -724,7 +947,7 @@
     }
 
     window.addEventListener('resize', myChart.resize);
-</script>
+</script> -->
 
 <script>
     function updateTime() {
@@ -785,6 +1008,22 @@
         }
     });
 </script>
+<script>
+
+    items.forEach(item => {
+        item.addEventListener("click", function () {
+            const key = this.dataset.key;
+            const label = this.textContent.trim();
+
+            btn.childNodes[0].textContent = label + " ";
+            dropdown.classList.remove("open");
+            menu.style.display = "none";
+
+            loadChart(key);
+        });
+    });
+</script>
+
 
 
 </html>
