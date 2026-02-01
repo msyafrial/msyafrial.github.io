@@ -130,7 +130,7 @@ loader.load('walking.glb', (gltf) => {
   console.log('Animations:', gltf.animations);
   movingBox = gltf.scene;
   movingBox.scale.set(100, 100, 100);
-  movingBox.position.set(-1500, 200, 2000);
+  movingBox.position.set(-1500, 175, 2000);
   movingBox.rotation.y = 90 * Math.PI / 180;
   scene.add(movingBox);
   if (gltf.animations && gltf.animations.length > 0) {
