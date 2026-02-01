@@ -669,18 +669,21 @@
                 <img src="./src/img/download.png" class="icon-img">
             </a>
 
-            <a id="fullScreen" class="icon-btn" data-tooltip="FullScreen" href="/template/energi/3d" target="_blank">
+            <a id="fullScreen" class="icon-btn" data-tooltip="FullScreen" href="#" target="_blank">
                 <img src="./src/img/link.png" style="height: 25px;" class="icon-img">
             </a>
         </div>
     </div>
-
+    <div id="exportChart" style="width:1600px;height:900px;
+            position:fixed;left:-9999px;top:-9999px;"></div>
 
 </body>
 
 <script>
     const dom = document.getElementById('container');
+    const domExport = document.getElementById('exportChart');
     const myChart = echarts.init(dom, 'light', { renderer: 'svg' });
+    const exportChart = echarts.init(domExport, 'light', { renderer: 'canvas' });
 
     const baseOption = {
         tooltip: {
@@ -713,6 +716,9 @@
 
     myChart.setOption(baseOption);
     window.addEventListener('resize', myChart.resize);
+    exportChart.setOption(baseOption);
+    window.addEventListener('resize', exportChart.resize);
+
 </script>
 <script>
     let dashboardData = null;
@@ -744,6 +750,17 @@
 
 </script>
 <script>
+    function formatTanggal() {
+        const now = new Date();
+        return now.toLocaleString('id-ID', {
+            day: '2-digit',
+            month: 'long',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    }
+
     function loadChart(key) {
         if (!dashboardData || !dashboardData[key]) return;
 
@@ -846,9 +863,7 @@
                 }
             },
             yAxis: {
-                // axisLabel: {
-                //     formatter: `{value} ${cfg.unit}`
-                // }
+
 
                 type: 'value',
                 min: function (value) {
@@ -879,150 +894,109 @@
             },
             series
         }, true);
+        exportChart.setOption({
+            title: {
+                text: cfg.title,
+                subtext: formatTanggal(),
+                top: 'top',
+                left: 'center',
+                textStyle: {
+                    fontSize: 32,
+                    fontWeight: 'bold',
+                    color: '#000'
+                },
+                subtextStyle: {
+                    fontSize: 16,
+                    color: '#444'
+                }
+            },
+            color: [
+                '#00E5FF',
+                'greenyellow',
+                '#FF5252'
+            ],
+        
+            legend: {
+                data: Object.keys(paddedSeries),
+                textStyle: {
+                    fontSize: 30,
+                    color: '#000000',
+                    fontWeight: 'bold',
+
+                },
+                bottom: 0
+            },
+            grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '10%',
+                top: '10%',
+                containLabel: true
+            },
+            toolbox: {
+                feature: {
+                    saveAsImage: null
+                }
+            },
+            xAxis: {
+                type: 'category',
+                boundaryGap: false,
+                axisLine: {
+                    show: true,          // pastikan garis Y-axis tampil
+                    lineStyle: {
+                        width: 5,
+                        color: '#000000'
+                    }
+                },
+                data: [
+                    "00.00", "01.00", "02.00", "03.00", "04.00", "05.00",
+                    "06.00", "07.00", "08.00", "09.00", "10.00", "11.00",
+                    "12.00", "13.00", "14.00", "15.00", "16.00", "17.00",
+                    "18.00", "19.00", "20.00", "21.00", "22.00", "23.00"
+                ],
+                axisLabel: {
+                    fontSize: 16,      // Ubah ukuran font di sini
+                    color: '#000000',      // (opsional) warna teks
+                    rotate: 45,          // (opsional) rotasi teks
+                    fontWeight: 'bold'  // (opsional)
+                }
+            },
+            yAxis: {
+
+                type: 'value',
+                min: function (value) {
+                    return value.min;
+                },
+                axisLabel: {
+                    fontSize: 16,      // Ubah ukuran font di sini
+                    color: '#000000',      // (opsional) warna teks
+                    rotate: 45,          // (opsional) rotasi teks
+                    fontWeight: 'bold'  // (opsional)
+                },
+                splitLine: {
+                    show: true,            // tampilkan garis
+                    lineStyle: {
+                        width: 1,
+                        type: 'solid',      // solid | dashed | dotted
+                        color: '#000000'
+                    }
+                },
+
+                axisLine: {
+                    show: true,          // pastikan garis Y-axis tampil
+                    lineStyle: {
+                        width: 5,
+                        color: '#000000'
+                    }
+                },
+            },
+            series
+        }, true);
     }
 </script>
 
 
-<!-- 
-<script type="text/javascript">
-    var dom = document.getElementById('container');
-    var myChart = echarts.init(dom, 'light', {
-        renderer: 'svg',
-        useDirtyRect: false
-    });
-    var app = {};
 
-    var option;
-
-    option = {
-        title: {
-            text: ''
-        },
-
-
-        tooltip: {
-            trigger: 'axis'
-        },
-        legend: {
-            data: ['L1', 'L2', 'L3'],
-            textStyle: {
-                fontSize: 30,
-                color: '#ffff',
-                fontWeight: 'bold',
-
-            },
-            bottom: 0
-        },
-        grid: {
-            left: '3%',
-            right: '4%',
-            bottom: '10%',
-            top: '5%',
-            containLabel: true
-        },
-        toolbox: {
-            feature: {
-                saveAsImage: null
-            }
-        },
-        xAxis: {
-            type: 'category',
-            boundaryGap: false,
-            axisLine: {
-                show: true,          // pastikan garis Y-axis tampil
-                lineStyle: {
-                    width: 5,
-                    color: '#ffff'
-                }
-            },
-            data: [
-                '00.00', '01.00', '02.00', '03.00', '04.00', '05.00', '06.00',
-                '07.00', '08.00', '09.00', '10.00', '11.00', '12.00',
-                '13.00', '14.00', '15.00', '16.00', '17.00', '18.00',
-                '19.00', '20.00', '21.00', '22.00', '23.00'
-            ],
-            axisLabel: {
-                fontSize: 16,      // Ubah ukuran font di sini
-                color: '#ffff',      // (opsional) warna teks
-                rotate: 45,          // (opsional) rotasi teks
-                fontWeight: 'bold'  // (opsional)
-            }
-
-
-        },
-        yAxis: {
-                type: 'value',
-                min: function (value) {
-                    return value.max - 40;
-                },
-                axisLabel: {
-                    fontSize: 16,      // Ubah ukuran font di sini
-                    color: '#ffff',      // (opsional) warna teks
-                    rotate: 45,          // (opsional) rotasi teks
-                    fontWeight: 'bold'  // (opsional)
-            },
-            splitLine: {
-                show: true,            // tampilkan garis
-                lineStyle: {
-                    width: 1,
-                    type: 'solid',      // solid | dashed | dotted
-                    color: '#ffff'
-                }
-            },
-
-            axisLine: {
-                show: true,          // pastikan garis Y-axis tampil
-                lineStyle: {
-                    width: 5,
-                    color: '#ffff'
-                }
-            },
-
-        },
-        series: [
-            {
-                name: 'L1',
-                type: 'line',
-                smooth: true,
-                data: [233, 214, 238, 203, 229, 216, 237, 225, 212, 234, 208, 221, 239, 207, 231, 217, 226, 202, 235, 219, 240, 213, 228, 204],
-                lineStyle: {
-                    color: 'red',  // warna garis
-                    width: 3,          // ketebalan
-                    type: 'solid'     // solid | dashed | dotted
-                }
-            }
-            ,
-            {
-                name: 'L2',
-                type: 'line',
-                smooth: 'true',
-                data: [220, 236, 209, 227, 203, 234, 210, 222, 238, 214, 231, 205, 239, 216, 225, 233, 207, 223, 230, 218, 240, 212, 229, 204]
-                , lineStyle: {
-                    color: 'cyan',  // warna garis
-                    width: 3,          // ketebalan
-                    type: 'solid'     // solid | dashed | dotted
-                }
-            },
-            {
-                name: 'L3',
-                type: 'line',
-                smooth: 'true',
-                data: [237, 215, 229, 202, 233, 209, 240, 224, 211, 238, 217, 226, 205, 232, 218, 236, 203, 230, 212, 239, 220, 208, 234, 207]
-                , lineStyle: {
-                    color: 'yellow',  // warna garis
-                    width: 3,          // ketebalan
-                    type: 'solid'     // solid | dashed | dotted
-                }
-            }
-        ]
-    };
-
-    if (option && typeof option === 'object') {
-        myChart.setOption(option);
-    }
-
-    window.addEventListener('resize', myChart.resize);
-</script> -->
 
 <script>
     function updateTime() {
@@ -1097,7 +1071,23 @@
             loadChart(key);
         });
     });
+
+    document.getElementById("download").onclick = () => {
+        const url = exportChart.getDataURL({
+            type: 'png',
+            pixelRatio: 2,
+            backgroundColor: '#fff'
+        });
+
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "chart.png";
+        a.click();
+    };
+
 </script>
+
+
 
 
 
