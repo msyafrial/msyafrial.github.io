@@ -669,7 +669,7 @@
                 <img src="./src/img/download.png" class="icon-img">
             </a>
 
-            <a id="fullScreen" class="icon-btn" data-tooltip="FullScreen" href="#" target="_blank">
+            <a id="fullScreen" class="icon-btn" data-tooltip="fullScreen" >
                 <img src="./src/img/link.png" style="height: 25px;" class="icon-img">
             </a>
         </div>
@@ -760,13 +760,16 @@
             minute: '2-digit'
         });
     }
-
+    var setTitle = "";
+    var setUnit = "";
     function loadChart(key) {
         if (!dashboardData || !dashboardData[key]) return;
 
         const cfg = dashboardData[key];
         const paddedSeries = normalizeSeriesOnly(cfg.series);
         console.log(paddedSeries);
+        setTitle = cfg.title;
+        setUnit = cfg.unit;
 
         const series = Object.entries(paddedSeries).map(([name, data]) => ({
             name,
@@ -896,7 +899,7 @@
         }, true);
         exportChart.setOption({
             title: {
-                text: cfg.title,
+                text: cfg.title + ' (' + setUnit + ')',
                 subtext: formatTanggal(),
                 top: 'top',
                 left: 'center',
@@ -915,7 +918,7 @@
                 'greenyellow',
                 '#FF5252'
             ],
-        
+
             legend: {
                 data: Object.keys(paddedSeries),
                 textStyle: {
@@ -1018,9 +1021,10 @@
         const tahun = now.getFullYear();
 
         // Gabungkan hasil
-        const tampil = `${jam}:${menit}:${detik} , ${tanggal} ${bulan} ${tahun}`;
+        const tampil = `${jam}:${menit}:${detik}, ${tanggal} ${bulan} ${tahun}`;
 
         document.getElementById('waktu').textContent = tampil;
+        return tampil;
     }
 
     // Update setiap 1 detik
@@ -1081,11 +1085,15 @@
 
         const a = document.createElement("a");
         a.href = url;
-        a.download = "chart.png";
+        a.download = setTitle.replace(/ /g, "_") + "_" + updateTime().replace(/:/g, "").replace(/,/g, "").replace(/ /g, "_") + ".png";
         a.click();
+    };
+    document.getElementById("fullScreen").onclick = () => {
+        document.getElementById("container").requestFullscreen();
     };
 
 </script>
+
 
 
 
