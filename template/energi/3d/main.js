@@ -1,6 +1,22 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+const raycaster = new THREE.Raycaster();
+const mouse = new THREE.Vector2();
+
+const tooltip = document.getElementById('tooltip');
+const ttRoom = document.getElementById('tt-room');
+const ttStatus = document.getElementById('tt-status');
+const ttTitle = document.getElementById('tt-title');
+let movingBox;
+let boxDirection = 1;   // 1 = maju, -1 = mundur
+
+
+if (!tooltip || !ttRoom) {
+  console.error('Tooltip element NOT found');
+}
+// const tooltip = document.getElementById('tooltip');
+
 
 // =======================
 // CONSTANT
@@ -71,6 +87,7 @@ loader.load('musik_school.glb', (gltf) => {
   model.traverse(obj => {
     if (obj.isMesh) {
       obj.material = obj.material.clone();
+      obj.userData.status = 'offline';
       rooms[obj.name] = obj;
       setRoomStatus(obj.name, 'offline');
       console.log('Room loaded:', obj.name);
@@ -105,7 +122,49 @@ loader.load('musik_school.glb', (gltf) => {
   defaultCameraPos.copy(camera.position);
   defaultTarget.copy(controls.target);
   defaultZoom = camera.zoom;
+  setRoomStatus('Object_5', 'alarm');
+  setRoomStatus('Object_3', 'warning')
 });
+let mixer;
+loader.load('walking.glb', (gltf) => {
+  console.log('Animations:', gltf.animations);
+  movingBox = gltf.scene;
+  movingBox.scale.set(100, 100, 100);
+  movingBox.position.set(-1500, 200, 2000);
+  movingBox.rotation.y = 90 * Math.PI / 180;
+  scene.add(movingBox);
+  if (gltf.animations && gltf.animations.length > 0) {
+    mixer = new THREE.AnimationMixer(movingBox);
+
+    gltf.animations.forEach((clip) => {
+      const action = mixer.clipAction(clip);
+      action.play();
+    });
+
+    console.log('GLB animation started');
+  }
+});
+// function createMovingBox() {
+//   const geometry = new THREE.BoxGeometry(80, 40, 80);
+//   const material = new THREE.MeshStandardMaterial({
+//     color: 0x2196f3
+//   });
+
+//   movingBox = new THREE.Mesh(geometry, material);
+//   movingBox.position.set(0, 300, 2000); // posisi awal
+//   movingBox.castShadow = true;
+
+//   // OPTIONAL: supaya bisa kena raycaster / tooltip
+//   movingBox.userData = {
+//     status: 'normal',
+//     type: 'vehicle'
+//   };
+
+//   scene.add(movingBox);
+// }
+
+// createMovingBox();
+
 
 function resetViewSmooth() {
   const duration = 600;
@@ -134,6 +193,8 @@ document.getElementById('resetView').onclick = resetViewSmooth;
 function setRoomStatus(roomName, status) {
   const room = rooms[roomName];
   if (!room) return;
+
+  room.userData.status = status;
 
   // Stop blinking if exists
   if (alarmTimers[roomName]) {
@@ -164,10 +225,10 @@ function startAlarmBlink(roomName) {
 // =======================
 // DEMO SIMULATION (HAPUS NANTI)
 // =======================
-setTimeout(() => setRoomStatus('Object_2', 'alarm'), 500);
-setTimeout(() => setRoomStatus('Object_3', 'warning'), 4000);
+// setTimeout(() => setRoomStatus('Object_2', 'alarm'), 500);
+// setTimeout(() => setRoomStatus('Object_3', 'warning'), 4000);
 setTimeout(() => setRoomStatus('Object_4', 'offline'), 6000);
-setTimeout(() => setRoomStatus('Object_5', 'normal'), 8000);
+setTimeout(() => setRoomStatus('Object_2', 'normal'), 8000);
 
 // =======================
 // RESIZE
@@ -181,9 +242,123 @@ window.addEventListener('resize', () => {
 // =======================
 // LOOP
 // =======================
+const clock = new THREE.Clock();
 function animate() {
   requestAnimationFrame(animate);
+  const delta = Math.min(clock.getDelta(), 0.05);
+  
+  if (mixer) mixer.update(delta);
+  
+
+  // GERAK BOX
+  if (movingBox) {
+    movingBox.position.x += boxDirection * 120 * delta;
+    // Batas bolak-balik
+    if (movingBox.position.x > 0) {
+      boxDirection = -1;
+      movingBox.rotation.y = 270 * Math.PI / 180;
+    }
+    if (movingBox.position.x < -1500) {
+      boxDirection = 1;
+       movingBox.rotation.y = 90 * Math.PI / 180;
+    }
+    
+    // sedikit rotasi biar hidup
+    // movingBox.rotation.y += 1 * delta;
+  }
   controls.update();
   renderer.render(scene, camera);
 }
 animate();
+
+document.addEventListener('visibilitychange', () => {
+  if (!document.hidden) {
+    clock.getDelta(); // reset lonjakan
+    // console.log('Clock reset after tab active');
+  }
+});
+
+function positionTooltip(x, y) {
+  const padding = 12;
+
+  tooltip.style.left = '0px';
+  tooltip.style.top = '0px';
+  tooltip.style.display = 'block';
+
+  const rect = tooltip.getBoundingClientRect();
+
+  let left = x + 14;
+  let top = y + 14;
+
+  if (left + rect.width > window.innerWidth) {
+    left = x - rect.width - padding;
+  }
+
+  if (top + rect.height > window.innerHeight) {
+    top = y - rect.height - padding;
+  }
+
+  tooltip.style.left = `${left}px`;
+  tooltip.style.top = `${top}px`;
+}
+
+
+
+window.addEventListener('mousemove', (event) => {
+  mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+  mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+  raycaster.setFromCamera(mouse, camera);
+
+  const hits = raycaster.intersectObjects(
+    Object.values(rooms),
+    false
+  );
+
+  if (hits.length > 0) {
+    const obj = hits[0].object;
+
+    if (obj.userData.status === 'alarm') {
+      ttTitle.textContent = "ALARM";
+      ttTitle.style.color = "#ff3b30";
+      ttRoom.textContent = obj.name;
+      ttStatus.textContent = "High Temp";
+      positionTooltip(event.clientX, event.clientY);
+      tooltip.style.display = 'block';
+      requestAnimationFrame(() => {
+        tooltip.classList.add('show');
+      });
+      document.body.style.cursor = 'pointer';
+      return;
+    } else if (obj.userData.status === "warning") {
+      ttTitle.textContent = "WARNING";
+      ttTitle.style.color = "#FFC107";
+      ttRoom.textContent = obj.name;
+      ttStatus.textContent = "Warning Temp";
+      positionTooltip(event.clientX, event.clientY);
+      tooltip.style.display = 'block';
+      requestAnimationFrame(() => {
+        tooltip.classList.add('show');
+      });
+      document.body.style.cursor = 'pointer';
+      return;
+    }
+    else if (obj.userData.status === "normal") {
+      ttTitle.textContent = "NORMAL";
+      ttTitle.style.color = "#4CAF50";
+      ttRoom.textContent = obj.name;
+      ttStatus.textContent = "Normal";
+      positionTooltip(event.clientX, event.clientY);
+      tooltip.style.display = 'block';
+      requestAnimationFrame(() => {
+        tooltip.classList.add('show');
+      });
+      document.body.style.cursor = 'pointer';
+      return;
+    }
+  }
+
+  tooltip.classList.remove('show');
+  document.body.style.cursor = 'default';
+
+});

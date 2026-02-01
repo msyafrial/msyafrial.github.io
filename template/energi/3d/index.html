@@ -20,7 +20,7 @@
       color: #c1c1c1;
       padding: 10px;
       font-family: Arial;
-      font-size: 14px;
+      font-size: 20px;
       border-radius: 6px;
     }
 
@@ -86,6 +86,72 @@
     .btn-3d:hover::after {
       opacity: 1;
     }
+
+    .tooltip {
+      position: fixed;
+      min-width: 150px;
+      background: rgba(25, 25, 25, 0.85);
+      backdrop-filter: blur(10px);
+      border-radius: 10px;
+      padding: 10px 12px;
+      color: #fff;
+      font-family: Inter, Arial, sans-serif;
+      font-size: 13px;
+      pointer-events: none;
+      display: none;
+      z-index: 9999;
+      box-shadow:
+        0 10px 30px rgba(0, 0, 0, 0.4),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+      transform: translateY(5px);
+      opacity: 0;
+      transition: opacity .15s ease, transform .15s ease;
+    }
+
+    .tooltip.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .tooltip-header {
+      display: flex;
+      justify-content: center; 
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .tooltip-header .title {
+      font-weight: 600;
+      font-size: 16px;
+      letter-spacing: .4px;
+    }
+
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    .status-dot.alarm {
+      background: #ff3b30;
+      box-shadow: 0 0 10px #ff3b30;
+    }
+
+    .tooltip-body .row {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 4px;
+    }
+
+    .tooltip-body .label {
+      opacity: .6;
+    }
+
+    .alarm-text {
+      color: #ff3b30;
+      font-weight: 600;
+    }
   </style>
 
   <!-- IMPORT MAP -->
@@ -105,17 +171,34 @@
     🟢 Normal<br>
     🟡 Warning<br>
     🔴 Alarm<br>
-    ⚪ Offline
+    <!-- ⚪ Offline -->
   </div>
-  <a id="fullScreen"
-   class="btn-3d"
-   data-tooltip="FullScreen"
-   href="/template/energi/3d"
-   target="_blank">
-</a>
+  <a id="fullScreen" class="btn-3d" data-tooltip="FullScreen" href="/template/energi/3d" target="_blank">
+  </a>
   <button id="resetView" class="btn-3d" data-tooltip="Reset View"></button>
+  <div id="tooltip" class="tooltip">
+    <div class="tooltip-header">
+      <!-- <span class="status-dot alarm"></span> -->
+      <!-- <span class="title">ALARM</span> -->
+      <span class="title" id="tt-title">-</span>
+    </div>
+    <div class="tooltip-body">
+      <div class="row">
+        <span class="label">Room</span>
+        <span class="value" id="tt-room">-</span>
+      </div>
+      <div class="row">
+        <span class="label">Status</span>
+        <span class="value" id="tt-status">-</span>
+        <!-- <span class="value alarm-text">HIGH TEMP</span> -->
+      </div>
+    </div>
+  </div>
+
 
   <script type="module" src="./main.js"></script>
+
 </body>
+
 
 </html>
