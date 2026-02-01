@@ -130,7 +130,7 @@ loader.load('walking.glb', (gltf) => {
   console.log('Animations:', gltf.animations);
   movingBox = gltf.scene;
   movingBox.scale.set(100, 100, 100);
-  movingBox.position.set(-1500, 175, 2000);
+  movingBox.position.set(-1500, 175, 2100);
   movingBox.rotation.y = 90 * Math.PI / 180;
   scene.add(movingBox);
   if (gltf.animations && gltf.animations.length > 0) {
@@ -239,6 +239,57 @@ window.addEventListener('resize', () => {
   renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
+
+
+
+
+const speed = 280;
+const rotateSpeed = 6;
+
+let direction = 1;      // 1 = kanan, -1 = kiri
+let targetY = 0;
+let turning = false;
+
+function updateCapsule(delta) {
+  if (!movingBox) return;
+
+  // =====================
+  // GERAK (pelan saat muter)
+  // =====================
+  const moveFactor = turning ? 0.80 : 1.0;
+  movingBox.position.x += direction * speed * moveFactor * delta;
+
+
+  // =====================
+  // CEK BATAS
+  // =====================
+  if (!turning && direction === 1 && movingBox.position.x >= 0) {
+    turning = true;
+    direction = -1;           // <<< INI KUNCINYA
+    targetY = 270 * Math.PI / 180;
+  }
+
+  if (!turning && direction === -1 && movingBox.position.x <= -2400) {
+    turning = true;
+    direction = 1;            // <<< INI KUNCINYA
+    targetY = 90 * Math.PI / 180;
+  }
+
+  // =====================
+  // ROTASI KAPSUL
+  // =====================
+  if (turning) {
+    movingBox.rotation.y +=
+      (targetY - movingBox.rotation.y) * rotateSpeed * delta;
+
+    if (Math.abs(movingBox.rotation.y - targetY) < 0.01) {
+      movingBox.rotation.y = targetY;
+      turning = false;
+    }
+  }
+}
+
+
 // =======================
 // LOOP
 // =======================
@@ -246,26 +297,26 @@ const clock = new THREE.Clock();
 function animate() {
   requestAnimationFrame(animate);
   const delta = Math.min(clock.getDelta(), 0.05);
-  
-  if (mixer) mixer.update(delta);
-  
 
-  // GERAK BOX
-  if (movingBox) {
-    movingBox.position.x += boxDirection * 120 * delta;
-    // Batas bolak-balik
-    if (movingBox.position.x > 0) {
-      boxDirection = -1;
-      movingBox.rotation.y = 270 * Math.PI / 180;
-    }
-    if (movingBox.position.x < -1500) {
-      boxDirection = 1;
-       movingBox.rotation.y = 90 * Math.PI / 180;
-    }
-    
-    // sedikit rotasi biar hidup
-    // movingBox.rotation.y += 1 * delta;
-  }
+  if (mixer) mixer.update(delta);
+
+
+  // // GERAK BOX
+  // if (movingBox) {
+  //   movingBox.position.x += boxDirection * 280 * delta;
+  //   // Batas bolak-balik
+  //   if (movingBox.position.x > 0) {
+  //     boxDirection = -1;
+  //     movingBox.rotation.y = 270 * Math.PI / 180;
+  //   }
+  //   if (movingBox.position.x < -2400) {
+  //     boxDirection = 1;
+  //      movingBox.rotation.y = 90 * Math.PI / 180;
+  //   }
+  // }
+
+  updateCapsule(delta);
+
   controls.update();
   renderer.render(scene, camera);
 }
