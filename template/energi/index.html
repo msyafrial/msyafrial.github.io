@@ -41,6 +41,7 @@
             white-space: nowrap;
             text-align: center;
             color: white;
+            opacity: 0;
             /* background-color: #011229; */
         }
 
@@ -369,6 +370,7 @@
                 card.style.left = finalX + "px";
                 card.style.top = finalY + "px";
                 card.style.transform = `translate(-50%, -50%) scale(${scale})`;
+                card.style.opacity = 1; // tampilkan setelah fix
             });
         }
 
@@ -627,7 +629,7 @@
                 <span style="color: greenyellow;">Online</span>
             </div>
         </div>
-    </div>
+    
     <!-- Date Time -->
     <div class="card" data-x="1480" data-y="110" style="width: 150px;height: 40px;">
         <div id="waktu" style="font-size: 35px; color: white; font-weight: bold;"></div>
@@ -669,13 +671,19 @@
                 <img src="./src/img/download.png" class="icon-img">
             </a>
 
-            <a id="fullScreen" class="icon-btn" data-tooltip="fullScreen" >
+            <a id="fullScreen" class="icon-btn" data-tooltip="fullScreen">
                 <img src="./src/img/link.png" style="height: 25px;" class="icon-img">
             </a>
         </div>
     </div>
-    <div id="exportChart" style="width:1600px;height:900px;
-            position:fixed;left:-9999px;top:-9999px;"></div>
+        <div id="exportChart" style="position: fixed;
+    width: 1600px;
+    height: 900px;
+    visibility: hidden;  
+    pointer-events: none; 
+    display: none;"></div>
+    </div>
+
 
 </body>
 
