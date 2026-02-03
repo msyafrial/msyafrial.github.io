@@ -1,6 +1,8 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { MeshoptDecoder } from 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/libs/meshopt_decoder.module.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
 
@@ -72,6 +74,18 @@ const dirLight = new THREE.DirectionalLight(0xffffff, 1.5);
 dirLight.position.set(10, 20, 10);
 scene.add(dirLight);
 
+
+
+
+
+// // ===== DRACO SETUP (INI KUNCINYA) =====
+// const dracoLoader = new DRACOLoader();
+// dracoLoader.setDecoderPath('./draco/');
+// dracoLoader.setDecoderConfig({ type: 'wasm' });
+
+// const loader = new GLTFLoader();
+// loader.setDRACOLoader(dracoLoader);
+// ====================================
 // =======================
 // LOAD MODEL
 // =======================
@@ -79,10 +93,12 @@ const loader = new GLTFLoader();
 let defaultCameraPos = new THREE.Vector3();
 let defaultTarget = new THREE.Vector3();
 let defaultZoom;
+loader.setMeshoptDecoder(MeshoptDecoder);
 
 
-loader.load('musik_school.glb', (gltf) => {
+loader.load('SMAN96_FINAL03_solar.glb', (gltf) => {
   const model = gltf.scene;
+  const buildingGroup = new THREE.Group();
 
   model.traverse(obj => {
     if (obj.isMesh) {
@@ -90,9 +106,17 @@ loader.load('musik_school.glb', (gltf) => {
       obj.userData.status = 'offline';
       rooms[obj.name] = obj;
       setRoomStatus(obj.name, 'offline');
-      console.log('Room loaded:', obj.name);
+      console.log(obj.name);
     }
   });
+  scene.add(buildingGroup);
+
+  const lod = new THREE.LOD();
+  lod.addLevel(buildingGroup, 0);
+  // lod.addLevel(buildingMid, 50);
+  // lod.addLevel(buildingLow, 150);
+
+  scene.add(lod);
 
   scene.add(model);
 
@@ -104,15 +128,17 @@ loader.load('musik_school.glb', (gltf) => {
   model.position.sub(center);
 
   const maxDim = Math.max(size.x, size.y, size.z);
-  camera.position.set(maxDim * 0.3, maxDim * 0.3, maxDim * 0.8);
+  // camera.position.set(maxDim * 0.3, maxDim * 0.3, maxDim * 0.8);
+  // camera.position.set(-45, 10, -27);
+  camera.position.set(-50, 35, -27);
 
   camera.near = maxDim / 100;
   camera.far = maxDim * 100;
   camera.updateProjectionMatrix();
 
 
-  controls.target.set(-500, 0, 0);
-
+  // controls.target.set(-500, 0, 0);
+  controls.target.set(30, -30, 0);
   // controls.setPolarAngle(
   //   controls.getPolarAngle() - THREE.MathUtils.degToRad(180)
   // );
@@ -122,48 +148,50 @@ loader.load('musik_school.glb', (gltf) => {
   defaultCameraPos.copy(camera.position);
   defaultTarget.copy(controls.target);
   defaultZoom = camera.zoom;
-  setRoomStatus('Object_5', 'alarm');
-  setRoomStatus('Object_3', 'warning')
+
+  setRoomStatus('empty_5', 'alarm');
+  setRoomStatus('empty_3', 'warning')
 });
-let mixer;
-loader.load('walking.glb', (gltf) => {
-  console.log('Animations:', gltf.animations);
-  movingBox = gltf.scene;
-  movingBox.scale.set(100, 100, 100);
-  movingBox.position.set(-1500, 175, 2100);
-  movingBox.rotation.y = 90 * Math.PI / 180;
-  scene.add(movingBox);
-  if (gltf.animations && gltf.animations.length > 0) {
-    mixer = new THREE.AnimationMixer(movingBox);
-
-    gltf.animations.forEach((clip) => {
-      const action = mixer.clipAction(clip);
-      action.play();
-    });
-
-    console.log('GLB animation started');
-  }
-});
-// function createMovingBox() {
-//   const geometry = new THREE.BoxGeometry(80, 40, 80);
-//   const material = new THREE.MeshStandardMaterial({
-//     color: 0x2196f3
-//   });
-
-//   movingBox = new THREE.Mesh(geometry, material);
-//   movingBox.position.set(0, 300, 2000); // posisi awal
-//   movingBox.castShadow = true;
-
-//   // OPTIONAL: supaya bisa kena raycaster / tooltip
-//   movingBox.userData = {
-//     status: 'normal',
-//     type: 'vehicle'
-//   };
-
+// let mixer;
+// loader.load('walking.glb', (gltf) => {
+//   console.log('Animations:', gltf.animations);
+//   movingBox = gltf.scene;
+//   movingBox.scale.set(5, 5, 5);
+//   movingBox.position.set(0, 0, 0);
+//   movingBox.rotation.y = 90 * Math.PI / 180;
 //   scene.add(movingBox);
-// }
+//   if (gltf.animations && gltf.animations.length > 0) {
+//     mixer = new THREE.AnimationMixer(movingBox);
 
-// createMovingBox();
+//     gltf.animations.forEach((clip) => {
+//       const action = mixer.clipAction(clip);
+//       action.play();
+//     });
+
+//     console.log('GLB animation started');
+//   }
+// });
+
+function createMovingBox() {
+  const geometry = new THREE.BoxGeometry(7, 4.5, 6.5);
+  const material = new THREE.MeshStandardMaterial({ color: 0x2196f3 });
+
+
+  movingBox = new THREE.Mesh(geometry, material);
+  material.transparent = true;
+  movingBox.position.set(17.5, 2.5, 5);
+  movingBox.material.opacity = 0.35;
+  movingBox.name = 'room01';          // ⬅ WAJIB
+  movingBox.userData.status = 'normal';
+  
+
+  scene.add(movingBox);
+
+  rooms['room01'] = movingBox;        // ⬅ WAJIB
+  setRoomStatus('room01', 'alarm');    // 🔥 SEKARANG BLINK
+}
+
+createMovingBox();
 
 
 function resetViewSmooth() {
@@ -195,7 +223,7 @@ function setRoomStatus(roomName, status) {
   if (!room) return;
 
   room.userData.status = status;
-
+  // room.material.opacity = 0.2;
   // Stop blinking if exists
   if (alarmTimers[roomName]) {
     clearInterval(alarmTimers[roomName]);
@@ -243,7 +271,7 @@ window.addEventListener('resize', () => {
 
 
 
-const speed = 280;
+const speed = 1;
 const rotateSpeed = 6;
 
 let direction = 1;      // 1 = kanan, -1 = kiri
@@ -298,7 +326,7 @@ function animate() {
   requestAnimationFrame(animate);
   const delta = Math.min(clock.getDelta(), 0.05);
 
-  if (mixer) mixer.update(delta);
+
 
 
   // // GERAK BOX
@@ -315,7 +343,16 @@ function animate() {
   //   }
   // }
 
-  updateCapsule(delta);
+  // Debug posisi kamera
+  console.log("Camera position:", camera.position);
+  console.log("Camera rotation (deg):", {
+      x: THREE.MathUtils.radToDeg(camera.rotation.x),
+      y: THREE.MathUtils.radToDeg(camera.rotation.y),
+      z: THREE.MathUtils.radToDeg(camera.rotation.z)
+  });
+
+  // if (mixer) mixer.update(delta);
+  // updateCapsule(delta);
 
   controls.update();
   renderer.render(scene, camera);
