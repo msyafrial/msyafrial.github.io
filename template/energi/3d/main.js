@@ -3,6 +3,16 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { MeshoptDecoder } from 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/libs/meshopt_decoder.module.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
+// 1️⃣ Import stats.js (via CDN)
+import Stats from 'https://cdnjs.cloudflare.com/ajax/libs/stats.js/17/Stats.js';
+
+
+// 2️⃣ Buat instance stats
+const stats = new Stats();
+stats.showPanel(0); // 0 = fps
+document.body.appendChild(stats.dom);
+
+
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
 
@@ -52,10 +62,13 @@ const camera = new THREE.PerspectiveCamera(
 
 const renderer = new THREE.WebGLRenderer({
   antialias: true,
+  powerPreference: 'high-performance', // minta GPU maksimals
   alpha: true
 });
 renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.setPixelRatio(window.devicePixelRatio);
+// renderer.setPixelRatio(window.devicePixelRatio);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+
 renderer.setClearColor(0x000000, 0);
 document.body.appendChild(renderer.domElement);
 
@@ -102,21 +115,21 @@ loader.load('SMAN96_FINAL03_solar.glb', (gltf) => {
 
   model.traverse(obj => {
     if (obj.isMesh) {
-      obj.material = obj.material.clone();
+      // obj.material = obj.material.clone();
       obj.userData.status = 'offline';
       rooms[obj.name] = obj;
       setRoomStatus(obj.name, 'offline');
       console.log(obj.name);
     }
   });
-  scene.add(buildingGroup);
+  // scene.add(buildingGroup);
 
-  const lod = new THREE.LOD();
-  lod.addLevel(buildingGroup, 0);
-  // lod.addLevel(buildingMid, 50);
-  // lod.addLevel(buildingLow, 150);
+  // const lod = new THREE.LOD();
+  // lod.addLevel(buildingGroup, 0);
+  // // lod.addLevel(buildingMid, 50);
+  // // lod.addLevel(buildingLow, 150);
 
-  scene.add(lod);
+  // scene.add(lod);
 
   scene.add(model);
 
@@ -183,7 +196,7 @@ function createMovingBox() {
   movingBox.material.opacity = 0.35;
   movingBox.name = 'room01';          // ⬅ WAJIB
   movingBox.userData.status = 'normal';
-  
+
 
   scene.add(movingBox);
 
@@ -323,39 +336,26 @@ function updateCapsule(delta) {
 // =======================
 const clock = new THREE.Clock();
 function animate() {
+
   requestAnimationFrame(animate);
+  stats.begin();   // mulai pengukuran FPS
   const delta = Math.min(clock.getDelta(), 0.05);
 
 
-
-
-  // // GERAK BOX
-  // if (movingBox) {
-  //   movingBox.position.x += boxDirection * 280 * delta;
-  //   // Batas bolak-balik
-  //   if (movingBox.position.x > 0) {
-  //     boxDirection = -1;
-  //     movingBox.rotation.y = 270 * Math.PI / 180;
-  //   }
-  //   if (movingBox.position.x < -2400) {
-  //     boxDirection = 1;
-  //      movingBox.rotation.y = 90 * Math.PI / 180;
-  //   }
-  // }
-
   // Debug posisi kamera
-  console.log("Camera position:", camera.position);
-  console.log("Camera rotation (deg):", {
-      x: THREE.MathUtils.radToDeg(camera.rotation.x),
-      y: THREE.MathUtils.radToDeg(camera.rotation.y),
-      z: THREE.MathUtils.radToDeg(camera.rotation.z)
-  });
+  // console.log("Camera position:", camera.position);
+  // console.log("Camera rotation (deg):", {
+  //     x: THREE.MathUtils.radToDeg(camera.rotation.x),
+  //     y: THREE.MathUtils.radToDeg(camera.rotation.y),
+  //     z: THREE.MathUtils.radToDeg(camera.rotation.z)
+  // });
 
   // if (mixer) mixer.update(delta);
   // updateCapsule(delta);
 
   controls.update();
   renderer.render(scene, camera);
+  stats.end(); // akhiri pengukuran FPS
 }
 animate();
 
